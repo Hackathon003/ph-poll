@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 type AnalyticsData = {
   totals: { president: number; senator: number; vp: number }
-  hourly: Array<{ hour: string; position: string; vote_count: number }>
   presidents: Array<{ id: string; name: string; party: string; vote_count: number }>
   vps: Array<{ id: string; name: string; party: string; vote_count: number }>
   senators: Array<{ id: string; name: string; party: string; vote_count: number }>
@@ -12,24 +11,33 @@ type AnalyticsData = {
   generatedAt: string
 }
 
-const POSITION_LABELS: Record<string, string> = {
-  president: 'President',
-  vice_president: 'Vice President',
-  senator: 'Senator',
-}
-
 export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [countdown, setCountdown] = useState(30)
 
   useEffect(() => {
-    fetch('/api/analytics')
-      .then((r) => r.json())
-      .then((d) => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
+    const fetchData = () => {
+      fetch('/api/analytics')
+        .then((r) => r.json())
+        .then((d) => {
+          setData(d)
+          setLoading(false)
+          setCountdown(30)
+        })
+        .catch(() => setLoading(false))
+    }
+
+    fetchData()
+    const interval = setInterval(fetchData, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((c) => (c <= 1 ? 30 : c - 1))
+    }, 1000)
+    return () => clearInterval(timer)
   }, [])
 
   const totalVotes = data
@@ -47,6 +55,7 @@ export default function AnalyticsPage() {
         <div className="flex h-1.5">
           <div className="flex-1" style={{ background: 'var(--ph-blue)' }} />
           <div className="flex-1" style={{ background: 'var(--ph-red)' }} />
+          <div className="flex-1" style={{ background: 'var(--ph-yellow)' }} />
         </div>
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
@@ -62,9 +71,14 @@ export default function AnalyticsPage() {
                 : 'Loading...'}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted">
-            <span className="live-dot" />
-            Live Data
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex items-center gap-1.5 text-xs font-mono text-muted">
+              <span className="live-dot" />
+              Live Data
+            </div>
+            <span className="font-mono text-xs text-muted">
+              Refreshing in {countdown}s
+            </span>
           </div>
         </div>
       </header>
@@ -207,7 +221,7 @@ export default function AnalyticsPage() {
                     <div
                       key={c.id}
                       className="bg-white border border-border rounded-sm p-2.5"
-                      style={{ borderLeft: i < 12 ? '2px solid var(--ph-blue)' : undefined }}
+                      style={{ borderLeft: '2px solid var(--ph-blue)' }}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2 min-w-0">
@@ -238,57 +252,6 @@ export default function AnalyticsPage() {
               </div>
             </section>
 
-            {/* HOURLY TREND TABLE */}
-            {data.hourly.length > 0 && (
-              <section className="mb-8">
-                <div className="rule-thick mb-4">
-                  <h2 className="font-headline text-xl font-bold text-ink px-1">
-                    Voting Activity (Last 48 Hours)
-                  </h2>
-                </div>
-                <div className="bg-white border border-border rounded-sm overflow-x-auto">
-                  <table className="w-full text-sm font-mono min-w-[400px]">
-                    <thead>
-                      <tr className="border-b border-border bg-paper-dark">
-                        <th className="text-left px-4 py-2 text-xs text-muted font-normal">Hour</th>
-                        <th className="text-left px-4 py-2 text-xs text-muted font-normal">Position</th>
-                        <th className="text-right px-4 py-2 text-xs text-muted font-normal">Votes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.hourly.slice(0, 20).map((row, i) => (
-                        <tr key={i} className="border-b border-border last:border-0 hover:bg-paper transition-colors">
-                          <td className="px-4 py-2 text-xs text-muted">
-                            {new Date(row.hour).toLocaleString('en-PH', {
-                              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-                            })}
-                          </td>
-                          <td className="px-4 py-2 text-xs">
-                            <span
-                              className="px-1.5 py-0.5 rounded-sm text-white text-xs"
-                              style={{
-                                background:
-                                  row.position === 'president'
-                                    ? 'var(--ph-blue)'
-                                    : row.position === 'vice_president'
-                                    ? '#8B6914'
-                                    : 'var(--ph-red)',
-                              }}
-                            >
-                              {POSITION_LABELS[row.position] ?? row.position}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2 text-right text-xs font-bold text-ink">
-                            {Number(row.vote_count).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )}
-
             {/* DISCLAIMER */}
             <div className="border border-border rounded-sm p-4 bg-white">
               <p className="font-mono text-xs text-muted text-center">
@@ -309,7 +272,7 @@ export default function AnalyticsPage() {
           <div className="flex-1" style={{ background: 'var(--ph-yellow)' }} />
         </div>
         <p className="font-mono text-xs text-muted">
-          PH Poll 2025 · For educational purposes only · Not affiliated with COMELEC
+          PH Poll 2028 · For educational purposes only · Not affiliated with COMELEC
         </p>
       </footer>
     </div>
