@@ -55,6 +55,9 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  verification: {
+    google: '60dd8ad647c42513',
+  },
   other: {
     'google-adsense-account': 'ca-pub-2798925924296404',
   },
