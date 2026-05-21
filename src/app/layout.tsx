@@ -1,0 +1,23 @@
+import type { Metadata } from 'next'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'PH Poll 2025 — Unofficial Filipino Election Survey',
+  description:
+    'An unofficial, non-partisan online survey for the 2025 Philippine elections. One vote per household. No registration required.',
+  keywords: ['Philippine elections', '2025', 'Halalan', 'survey', 'poll', 'Pilipinas'],
+  openGraph: {
+    title: 'PH Poll 2025',
+    description: 'Who will you vote for? Cast your survey vote now.',
+    type: 'website',
+    locale: 'en_PH',
+  },
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en-PH">
+      <body>{children}</body>
+    </html>
+  )
+}
