@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import Script from 'next/script'
 import { CandidateCard } from '@/components/CandidateCard'
 import { useToast } from '@/components/Toast'
 import type { Candidate } from '@/lib/supabase'
@@ -55,7 +56,6 @@ function SkeletonCard() {
   )
 }
 
-// Ballot Card Component
 function BallotCard({
   president,
   vp,
@@ -97,7 +97,6 @@ function BallotCard({
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
     >
       <div className="w-full max-w-sm">
-        {/* The card itself — this gets captured */}
         <div
           ref={cardRef}
           style={{
@@ -108,14 +107,11 @@ function BallotCard({
             fontFamily: 'Georgia, serif',
           }}
         >
-          {/* Header stripe */}
           <div style={{ display: 'flex', height: '6px', marginBottom: '16px', borderRadius: '2px', overflow: 'hidden' }}>
             <div style={{ flex: 1, background: '#0038A8' }} />
             <div style={{ flex: 1, background: '#CE1126' }} />
             <div style={{ flex: 1, background: '#FCD116' }} />
           </div>
-
-          {/* Title */}
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <p style={{ fontFamily: 'monospace', fontSize: '9px', letterSpacing: '3px', color: '#888', textTransform: 'uppercase', marginBottom: '4px' }}>
               Unofficial Survey Ballot
@@ -127,11 +123,7 @@ function BallotCard({
               My Survey Choices
             </p>
           </div>
-
-          {/* Divider */}
           <div style={{ borderTop: '2px solid #1a1a1a', marginBottom: '16px' }} />
-
-          {/* President */}
           <div style={{ marginBottom: '14px' }}>
             <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#0038A8', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 700 }}>
               ▸ President
@@ -143,8 +135,6 @@ function BallotCard({
               {president?.party ?? ''}
             </p>
           </div>
-
-          {/* VP */}
           <div style={{ marginBottom: '14px' }}>
             <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#0038A8', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 700 }}>
               ▸ Vice President
@@ -156,8 +146,6 @@ function BallotCard({
               {vp?.party ?? ''}
             </p>
           </div>
-
-          {/* Senators */}
           <div>
             <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#CE1126', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 700 }}>
               ▸ Senators ({senators.length}/12)
@@ -175,16 +163,12 @@ function BallotCard({
               ))}
             </div>
           </div>
-
-          {/* Footer */}
           <div style={{ borderTop: '1px solid #ccc', marginTop: '16px', paddingTop: '12px', textAlign: 'center' }}>
             <p style={{ fontFamily: 'monospace', fontSize: '8px', color: '#aaa', margin: 0 }}>
               ph-poll.vercel.app · Unofficial Survey Only
             </p>
           </div>
         </div>
-
-        {/* Action buttons */}
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleDownload}
@@ -271,7 +255,6 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [fetchResults])
 
-  // Show ballot card when all votes are done
   useEffect(() => {
     const allDone = votedPresident && votedVP && votedSenators.size >= MAX_SENATORS
     if (allDone && !ballotShownOnce) {
@@ -365,9 +348,7 @@ export default function Home() {
   const handleSubmitSenators = async () => {
     if (selectedSenators.size === 0) return
     setSubmittingSenators(true)
-
     const ids = Array.from(selectedSenators)
-
     try {
       const res = await fetch('/api/senators-vote', {
         method: 'POST',
@@ -375,7 +356,6 @@ export default function Home() {
         body: JSON.stringify({ candidateIds: ids }),
       })
       const data = await res.json()
-
       if (res.ok) {
         const finalVoted = new Set([...Array.from(votedSenators), ...ids])
         setVotedSenators(finalVoted)
@@ -420,16 +400,22 @@ export default function Home() {
   const totalAlreadyVoted = votedSenators.size
   const canSelectMore = totalSelected + totalAlreadyVoted < MAX_SENATORS
   const allSenatorsDone = totalAlreadyVoted >= MAX_SENATORS
-
   const allVotingDone = votedPresident && votedVP && allSenatorsDone
 
-  // Get voted candidate objects for ballot card
   const votedPresidentObj = candidates.president.find(c => c.id === votedPresident) ?? null
   const votedVPObj = candidates.vice_president.find(c => c.id === votedVP) ?? null
   const votedSenatorObjs = candidates.senator.filter(c => votedSenators.has(c.id))
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
+
+      {/* ADSTERRA SCRIPT */}
+      <Script
+        async
+        data-cfasync="false"
+        src="https://pl29511566.effectivecpmnetwork.com/453d7cec6c5db3458f5c8097965ec6bf/invoke.js"
+        strategy="afterInteractive"
+      />
 
       {/* BALLOT CARD MODAL */}
       {showBallot && (
@@ -527,6 +513,11 @@ export default function Home() {
           </button>
         </div>
       )}
+
+      {/* ADSTERRA AD — between disclaimer and tabs */}
+      <div className="max-w-6xl mx-auto px-4 mt-4">
+        <div id="container-453d7cec6c5db3458f5c8097965ec6bf" />
+      </div>
 
       {/* TABS */}
       <div className="max-w-6xl mx-auto px-4 mt-6">
@@ -628,7 +619,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* Progress bar */}
             <div className="mb-5 rounded-sm p-3" style={{ background: '#fff', border: '1px solid var(--border)' }}>
               <div className="flex justify-between font-mono text-xs mb-2" style={{ color: 'var(--muted)' }}>
                 <span>Ballot progress</span>
@@ -691,7 +681,6 @@ export default function Home() {
                   })}
             </div>
 
-            {/* Sticky submit bar */}
             {!allSenatorsDone && totalSelected > 0 && (
               <div
                 className="sticky bottom-4 mt-6 rounded-sm p-4 flex items-center justify-between gap-4"
