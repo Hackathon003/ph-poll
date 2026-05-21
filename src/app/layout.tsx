@@ -3,7 +3,7 @@ import Script from 'next/script'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'PH Poll 2025 — Unofficial Filipino Election Survey',
+  title: 'PH Poll 2028 — Unofficial Filipino Election Survey',
   description:
     'An unofficial, non-partisan online survey for the 2025 Philippine elections. One vote per household. No registration required.',
   keywords: ['Philippine elections', '2025', 'Halalan', 'survey', 'poll', 'Pilipinas'],
