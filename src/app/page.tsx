@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { CandidateCard } from '@/components/CandidateCard'
 import { useToast } from '@/components/Toast'
@@ -55,6 +55,161 @@ function SkeletonCard() {
   )
 }
 
+// Ballot Card Component
+function BallotCard({
+  president,
+  vp,
+  senators,
+  onClose,
+}: {
+  president: Candidate | null
+  vp: Candidate | null
+  senators: Candidate[]
+  onClose: () => void
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [downloading, setDownloading] = useState(false)
+
+  const handleDownload = async () => {
+    if (!cardRef.current) return
+    setDownloading(true)
+    try {
+      const html2canvas = (await import('html2canvas')).default
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f5f0e8',
+      })
+      const link = document.createElement('a')
+      link.download = 'my-ph-ballot-2028.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    } catch {
+      alert('Download failed. Try screenshotting instead!')
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+    >
+      <div className="w-full max-w-sm">
+        {/* The card itself — this gets captured */}
+        <div
+          ref={cardRef}
+          style={{
+            background: '#f5f0e8',
+            border: '2px solid #1a1a1a',
+            borderRadius: '4px',
+            padding: '24px',
+            fontFamily: 'Georgia, serif',
+          }}
+        >
+          {/* Header stripe */}
+          <div style={{ display: 'flex', height: '6px', marginBottom: '16px', borderRadius: '2px', overflow: 'hidden' }}>
+            <div style={{ flex: 1, background: '#0038A8' }} />
+            <div style={{ flex: 1, background: '#CE1126' }} />
+            <div style={{ flex: 1, background: '#FCD116' }} />
+          </div>
+
+          {/* Title */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <p style={{ fontFamily: 'monospace', fontSize: '9px', letterSpacing: '3px', color: '#888', textTransform: 'uppercase', marginBottom: '4px' }}>
+              Unofficial Survey Ballot
+            </p>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#1a1a1a', lineHeight: 1, margin: 0 }}>
+              PH Poll <span style={{ color: '#CE1126' }}>2028</span>
+            </h2>
+            <p style={{ fontFamily: 'monospace', fontSize: '8px', color: '#aaa', marginTop: '4px' }}>
+              My Survey Choices
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div style={{ borderTop: '2px solid #1a1a1a', marginBottom: '16px' }} />
+
+          {/* President */}
+          <div style={{ marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#0038A8', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 700 }}>
+              ▸ President
+            </p>
+            <p style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', margin: 0 }}>
+              {president?.name ?? '—'}
+            </p>
+            <p style={{ fontFamily: 'monospace', fontSize: '9px', color: '#888', margin: '2px 0 0 0' }}>
+              {president?.party ?? ''}
+            </p>
+          </div>
+
+          {/* VP */}
+          <div style={{ marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#0038A8', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 700 }}>
+              ▸ Vice President
+            </p>
+            <p style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', margin: 0 }}>
+              {vp?.name ?? '—'}
+            </p>
+            <p style={{ fontFamily: 'monospace', fontSize: '9px', color: '#888', margin: '2px 0 0 0' }}>
+              {vp?.party ?? ''}
+            </p>
+          </div>
+
+          {/* Senators */}
+          <div>
+            <p style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '2px', color: '#CE1126', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 700 }}>
+              ▸ Senators ({senators.length}/12)
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+              {senators.map((s, i) => (
+                <div key={s.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: '8px', color: '#CE1126', fontWeight: 700, minWidth: '14px' }}>
+                    {i + 1}.
+                  </span>
+                  <span style={{ fontSize: '10px', color: '#1a1a1a', lineHeight: 1.3, fontWeight: 600 }}>
+                    {s.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ borderTop: '1px solid #ccc', marginTop: '16px', paddingTop: '12px', textAlign: 'center' }}>
+            <p style={{ fontFamily: 'monospace', fontSize: '8px', color: '#aaa', margin: 0 }}>
+              ph-poll.vercel.app · Unofficial Survey Only
+            </p>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex-1 py-3 font-mono text-sm font-bold rounded-sm transition-all"
+            style={{ background: '#0038A8', color: '#fff', opacity: downloading ? 0.7 : 1 }}
+          >
+            {downloading ? 'Saving...' : '⬇ Download Card'}
+          </button>
+          <button
+            onClick={onClose}
+            className="py-3 px-4 font-mono text-sm rounded-sm transition-all"
+            style={{ background: '#fff', color: '#1a1a1a', border: '1px solid #ccc' }}
+          >
+            Close
+          </button>
+        </div>
+        <p className="text-center font-mono mt-2" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>
+          Screenshot or download to share on social media!
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>('president')
   const [candidates, setCandidates] = useState<Record<TabType, Candidate[]>>({
@@ -70,6 +225,8 @@ export default function Home() {
   const [selectedSenators, setSelectedSenators] = useState<Set<string>>(new Set())
   const [submittingSenators, setSubmittingSenators] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [showBallot, setShowBallot] = useState(false)
+  const [ballotShownOnce, setBallotShownOnce] = useState(false)
   const { showToast, ToastComponent } = useToast()
 
   const MAX_SENATORS = 12
@@ -78,9 +235,11 @@ export default function Home() {
     const vp = localStorage.getItem('ph_voted_president')
     const vvp = localStorage.getItem('ph_voted_vp')
     const vs = localStorage.getItem('ph_voted_senators')
+    const bs = localStorage.getItem('ph_ballot_shown')
     if (vp) setVotedPresident(vp)
     if (vvp) setVotedVP(vvp)
     if (vs) { try { setVotedSenators(new Set(JSON.parse(vs))) } catch {} }
+    if (bs) setBallotShownOnce(true)
   }, [])
 
   const fetchResults = useCallback(async () => {
@@ -111,6 +270,18 @@ export default function Home() {
     const interval = setInterval(fetchResults, 30000)
     return () => clearInterval(interval)
   }, [fetchResults])
+
+  // Show ballot card when all votes are done
+  useEffect(() => {
+    const allDone = votedPresident && votedVP && votedSenators.size >= MAX_SENATORS
+    if (allDone && !ballotShownOnce) {
+      setTimeout(() => {
+        setShowBallot(true)
+        setBallotShownOnce(true)
+        localStorage.setItem('ph_ballot_shown', '1')
+      }, 800)
+    }
+  }, [votedPresident, votedVP, votedSenators, ballotShownOnce])
 
   const totalVotes = (pos: TabType) =>
     candidates[pos].reduce((s, c) => s + c.vote_count, 0)
@@ -170,7 +341,6 @@ export default function Home() {
       return
     }
 
-    // Senator: toggle selection only, no API call yet
     if (tab === 'senator') {
       if (votedSenators.has(candidateId)) {
         showToast('You already submitted a vote for this senator.', 'info')
@@ -251,8 +421,25 @@ export default function Home() {
   const canSelectMore = totalSelected + totalAlreadyVoted < MAX_SENATORS
   const allSenatorsDone = totalAlreadyVoted >= MAX_SENATORS
 
+  const allVotingDone = votedPresident && votedVP && allSenatorsDone
+
+  // Get voted candidate objects for ballot card
+  const votedPresidentObj = candidates.president.find(c => c.id === votedPresident) ?? null
+  const votedVPObj = candidates.vice_president.find(c => c.id === votedVP) ?? null
+  const votedSenatorObjs = candidates.senator.filter(c => votedSenators.has(c.id))
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
+
+      {/* BALLOT CARD MODAL */}
+      {showBallot && (
+        <BallotCard
+          president={votedPresidentObj}
+          vp={votedVPObj}
+          senators={votedSenatorObjs}
+          onClose={() => setShowBallot(false)}
+        />
+      )}
 
       {/* FLAG STRIPE */}
       <div className="flex h-1.5">
@@ -323,6 +510,23 @@ export default function Home() {
       >
         Unofficial survey only. Not affiliated with COMELEC. One response per household.
       </div>
+
+      {/* ALL DONE BANNER */}
+      {allVotingDone && (
+        <div
+          className="py-3 px-4 text-center font-mono text-xs flex items-center justify-center gap-3"
+          style={{ background: 'var(--ph-blue)', color: '#fff' }}
+        >
+          <span>🗳️ All votes submitted!</span>
+          <button
+            onClick={() => setShowBallot(true)}
+            className="underline font-bold"
+            style={{ color: '#fff' }}
+          >
+            View My Ballot Card
+          </button>
+        </div>
+      )}
 
       {/* TABS */}
       <div className="max-w-6xl mx-auto px-4 mt-6">
