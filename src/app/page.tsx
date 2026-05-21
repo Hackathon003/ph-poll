@@ -733,7 +733,7 @@ export default function Home() {
             "Ang bayan nating Pilipinas" — For research and educational purposes only.
           </p>
           <p className="font-mono text-xs" style={{ color: 'var(--muted)' }}>
-            1 vote per household · IP + cookie protection · No personal data collected · Not affiliated with COMELEC
+            IP + cookie protection · No personal data collected · Not affiliated with COMELEC
           </p>
           <div className="mt-5">
             <Link href="/analytics" className="font-mono text-xs transition-colors hover:underline" style={{ color: 'var(--muted)' }}>
