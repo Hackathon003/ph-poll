@@ -66,19 +66,28 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-PH">
-      <head>
+      <body>
+        {/* 1. Google AdSense Script */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2798925924296404"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-      </head>
-      <body>
+
+        {/* 2. Existing Adsterra Popunder Script */}
         <Script
           src="https://pl29519585.effectivecpmnetwork.com/70/dd/1b/70dd1b8ebdac33d9824cd0a6d6fe9a86.js"
           strategy="afterInteractive"
         />
+
+        {/* 3. NEW Adsterra Social Bar Script */}
+        <Script 
+          src="https://pl29524851.effectivecpmnetwork.com/fb/9a/07/fb9a07737799fbed2344bf7974b897fa.js"
+          strategy="afterInteractive" 
+        />
+
+        {/* Your application content */}
         {children}
       </body>
     </html>
