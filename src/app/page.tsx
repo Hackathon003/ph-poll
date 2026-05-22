@@ -514,11 +514,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* ADSTERRA AD — between disclaimer and tabs */}
-      <div className="max-w-6xl mx-auto px-4 mt-4">
-        <div id="container-453d7cec6c5db3458f5c8097965ec6bf" />
-      </div>
-
       {/* TABS */}
       <div className="max-w-6xl mx-auto px-4 mt-6">
         <div className="flex" style={{ borderBottom: '1px solid var(--border)' }}>
