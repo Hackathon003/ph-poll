@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: 'PH Poll 2028',
     images: [
       {
-        url: 'https://ph-poll.vercel.app/og_image_ballot_card.PNG', // 👈 Update this line
+        url: 'https://ph-poll.vercel.app/og_image_ballot_cards.PNG', // 👈 Update this line
         width: 1200,
         height: 630,
         alt: 'PH Poll 2028 — Unofficial Filipino Election Survey',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'PH Poll 2028 — Sino ang Iboboto Mo?',
     description: 'Vote for your 2028 President, VP, and Senators! Walang sign up, libre lang 🇵🇭🗳️',
-    images: ['https://ph-poll.vercel.app/og_image_ballot_card.PNG'], // 👈 Update this line too
+    images: ['https://ph-poll.vercel.app/og_image_ballot_cards.PNG'], // 👈 Update this line too
   },
   alternates: {
     canonical: 'https://ph-poll.vercel.app',
