@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     'Vico Sotto 2028',
     'Kiko Pangilinan 2028',
   ],
- openGraph: {
+  openGraph: {
     title: 'PH Poll 2028 — Sino ang Iboboto Mo?',
     description: 'Vote for your 2028 President, VP, and Senators! Walang sign up, libre lang. Get your shareable ballot card! 🇵🇭🗳️',
     type: 'website',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: 'PH Poll 2028',
     images: [
       {
-        url: 'https://ph-poll.vercel.app/og_image_ballot_cards.PNG', // 👈 Update this line
+        url: 'https://ph-poll.vercel.app/og_image_ballot_cards.PNG',
         width: 1200,
         height: 630,
         alt: 'PH Poll 2028 — Unofficial Filipino Election Survey',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'PH Poll 2028 — Sino ang Iboboto Mo?',
     description: 'Vote for your 2028 President, VP, and Senators! Walang sign up, libre lang 🇵🇭🗳️',
-    images: ['https://ph-poll.vercel.app/og_image_ballot_cards.PNG'], // 👈 Update this line too
+    images: ['https://ph-poll.vercel.app/og_image_ballot_cards.PNG'],
   },
   alternates: {
     canonical: 'https://ph-poll.vercel.app',
@@ -76,20 +76,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
 
-        {/* 2. Existing Adsterra Popunder Script */}
+        {/* 2. Adsterra Popunder Script */}
         <Script
           src="https://pl29519585.effectivecpmnetwork.com/70/dd/1b/70dd1b8ebdac33d9824cd0a6d6fe9a86.js"
           strategy="afterInteractive"
         />
 
-        {/* 3. NEW Adsterra Social Bar Script */}
+        {/* 3. Adsterra Social Bar Script */}
         <Script 
           src="https://pl29524851.effectivecpmnetwork.com/fb/9a/07/fb9a07737799fbed2344bf7974b897fa.js"
           strategy="afterInteractive" 
         />
 
-        {/* Your application content */}
+        {/* 4. Adsterra Banner 300x250 */}
+        <Script
+          id="adsterra-banner-options"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              atOptions = {
+                'key' : '2e2e781789caa6384fcce94ffcf789f2',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+              };
+            `,
+          }}
+        />
+        <Script
+          src="https://www.highperformanceformat.com/2e2e781789caa6384fcce94ffcf789f2/invoke.js"
+          strategy="afterInteractive"
+        />
+
+        {/* App content */}
         {children}
+
+        <Analytics />
       </body>
     </html>
   )

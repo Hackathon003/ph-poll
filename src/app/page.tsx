@@ -409,13 +409,6 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
 
-      {/* ADSTERRA SCRIPT */}
-      <Script
-        async
-        data-cfasync="false"
-        src="https://pl29511566.effectivecpmnetwork.com/453d7cec6c5db3458f5c8097965ec6bf/invoke.js"
-        strategy="afterInteractive"
-      />
 
       {/* BALLOT CARD MODAL */}
       {showBallot && (
