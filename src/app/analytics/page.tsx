@@ -310,7 +310,7 @@ export default function AnalyticsPage() {
           <div className="flex-1" style={{ background: 'var(--ph-yellow)' }} />
         </div>
         <p className="font-mono text-xs text-muted">
-          PH Poll 2025 · For educational purposes only · Not affiliated with COMELEC
+          PH Poll 2028 · For educational purposes only · Not affiliated with COMELEC
         </p>
       </footer>
     </div>
